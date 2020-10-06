@@ -20,10 +20,13 @@ Route::get('/', function () {
 });
 
 Route::middleware([HelloMiddleware::class])->group(function () {
-    Route::get('/hello', 'App\Http\Controllers\HelloController@index')->name('hello');
+    Route::get('/hello', 'App\Http\Controllers\HelloController@index');
     Route::get('/hello/other', 'App\Http\Controllers\HelloController@other');
 });
-Route::namespace('Sample')->group(function () {
-    Route::get('/sample', 'App\Http\Controllers\SampleController@index')->name('hello');
-    Route::get('/hello/other', 'App\Http\Controllers\SampleController@other');
+
+Route::namespace('App\Http\Controllers\Sample')->group(function () {
+    Route::get('/sample', 'SampleController@index')->name('sample');
+    Route::get('/sample/other', 'SampleController@other');
 });
+
+Route::get('/hello/{person}', 'App\Http\Controllers\HelloController@index');

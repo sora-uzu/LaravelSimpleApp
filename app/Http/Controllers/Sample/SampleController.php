@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 
 class SampleController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
+        $sample_msg = config('sample.message');
+        $sample_data = config('sample.data');
         $data = [
-            'msg'=>'SampleControllerIndex!',
+            'msg'=>$sample_msg,
+            'data'=>$sample_data,
         ];
         return view('hello.index', $data);
     }
