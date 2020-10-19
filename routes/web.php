@@ -22,6 +22,8 @@ Route::get('/', function () {
 Route::middleware([HelloMiddleware::class])->group(function () {
     Route::get('/hello', 'App\Http\Controllers\HelloController@index')->name('hello');
     Route::get('/hello/{msg}', 'App\Http\Controllers\HelloController@other');
+    Route::post('/hello/other', 'App\Http\Controllers\HelloController@other');
+    
 });
 
 Route::namespace('App\Http\Controllers\Sample')->group(function () {

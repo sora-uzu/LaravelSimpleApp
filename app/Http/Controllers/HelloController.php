@@ -14,34 +14,42 @@ class HelloController extends Controller
     }
     public function index()
     {
-        $url = Storage::disk('public')->url($this->fname);
-        $size = Storage::disk('public')->size($this->fname);
-        $modified = Storage::disk('public')->lastModified($this->fname);
-        $modified_time = date('y-m-d H:i:s', $modified);
-        $sample_keys = ['url', 'size', 'modified'];
-        $sample_meta = [$url, $size, $modified_time];
-        $result = '<table><tr><th>' . implode('</th><th>', $sample_keys) . '</th></tr>';
-        $result .= '<tr><td>' . implode('</td><td>', $sample_meta) . '</td></tr></table>';
+        // $url = Storage::disk('public')->url($this->fname);
+        // $size = Storage::disk('public')->size($this->fname);
+        // $modified = Storage::disk('public')->lastModified($this->fname);
+        // $modified_time = date('y-m-d H:i:s', $modified);
+        // $sample_keys = ['url', 'size', 'modified'];
+        // $sample_meta = [$url, $size, $modified_time];
+        // $result = '<table><tr><th>' . implode('</th><th>', $sample_keys) . '</th></tr>';
+        // $result .= '<tr><td>' . implode('</td><td>', $sample_meta) . '</td></tr></table>';
 
-        $sample_data = Storage::disk('public')->get($this->fname);
+        // $sample_data = Storage::disk('public')->get($this->fname);
+        // $data = [
+        //     'msg'=>$result,
+        //     'data'=>explode(PHP_EOL, $sample_data)
+        // ];
+        $dir = '/';
+        $all = Storage::disk('local')->allfiles($dir);
+
         $data = [
-            'msg'=>$result,
-            'data'=>explode(PHP_EOL, $sample_data)
+            'msg'=> 'DIR: ' . $dir,
+            'data'=> $all
         ];
         return view('hello.index', $data);
     }
 
-    public function other($msg)
+    public function other(Request $request)
     {
-        if (Storage::disk('public')->exists('bk_' . $this->fname)){
-            Storage::disk('public')->delete('bk_' . $this->fname);
-        }
-        Storage::disk('local')->copy($this->fname, 'bk_' . $this->fname);
-        if (Storage::disk('public')->exists('bk_' . $this->fname)){
-        Storage::disk('public')->delete('bk_' . $this->fname);
-        }
-        Storage::disk('local')->move('public/bk_' . $this->fname, 'bk_' . $this->fname);
-
+        // if (Storage::disk('public')->exists('bk_' . $this->fname)){
+        //     Storage::disk('public')->delete('bk_' . $this->fname);
+        // }
+        // Storage::disk('local')->copy($this->fname, 'bk_' . $this->fname);
+        // if (Storage::disk('public')->exists('bk_' . $this->fname)){
+        // Storage::disk('public')->delete('bk_' . $this->fname);
+        // }
+        // Storage::disk('local')->move('public/bk_' . $this->fname, 'bk_' . $this->fname);
+        $ext = '_' . $request->file('file')->extension();
+        Storage::disk('public')->putfileAs('files', $request->file('file'), 'uploaded' . $ext);
         return redirect()->route('hello');
     }
 }
