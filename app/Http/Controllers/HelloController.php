@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 class HelloController extends Controller
 {
@@ -12,44 +13,32 @@ class HelloController extends Controller
     {
         $this->fname = 'hello.txt';
     }
-    public function index()
+    public function index(Request $request, Response $response)
     {
-        // $url = Storage::disk('public')->url($this->fname);
-        // $size = Storage::disk('public')->size($this->fname);
-        // $modified = Storage::disk('public')->lastModified($this->fname);
-        // $modified_time = date('y-m-d H:i:s', $modified);
-        // $sample_keys = ['url', 'size', 'modified'];
-        // $sample_meta = [$url, $size, $modified_time];
-        // $result = '<table><tr><th>' . implode('</th><th>', $sample_keys) . '</th></tr>';
-        // $result .= '<tr><td>' . implode('</td><td>', $sample_meta) . '</td></tr></table>';
-
-        // $sample_data = Storage::disk('public')->get($this->fname);
-        // $data = [
-        //     'msg'=>$result,
-        //     'data'=>explode(PHP_EOL, $sample_data)
-        // ];
-        $dir = '/';
-        $all = Storage::disk('local')->allfiles($dir);
-
+        $name = $request->query('name');
+        $mail = $request->query('mail');
+        $tel = $request->query('tel');
+        $msg = $request->query('msg');
+        $keys = ['名前','メール','電話'];
+        $values = [$name, $mail, $tel];
         $data = [
-            'msg'=> 'DIR: ' . $dir,
-            'data'=> $all
+          'msg'=> $msg,
+          'keys'=> $keys,
+          'values'=> $values,
         ];
+        $request->flash();
         return view('hello.index', $data);
     }
 
     public function other(Request $request)
     {
-        // if (Storage::disk('public')->exists('bk_' . $this->fname)){
-        //     Storage::disk('public')->delete('bk_' . $this->fname);
-        // }
-        // Storage::disk('local')->copy($this->fname, 'bk_' . $this->fname);
-        // if (Storage::disk('public')->exists('bk_' . $this->fname)){
-        // Storage::disk('public')->delete('bk_' . $this->fname);
-        // }
-        // Storage::disk('local')->move('public/bk_' . $this->fname, 'bk_' . $this->fname);
-        $ext = '_' . $request->file('file')->extension();
-        Storage::disk('public')->putfileAs('files', $request->file('file'), 'uploaded' . $ext);
-        return redirect()->route('hello');
+        $data = [
+            'name' => 'Taro',
+            'mail' => 'taro@yamada',
+            'tel' => '090-9999-9999',
+        ];
+        $query_str = http_build_query($data);
+        $data['msg'] = $query_str;
+        return redirect()->route('hello', $data);
     }
 }

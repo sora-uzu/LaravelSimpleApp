@@ -19,16 +19,14 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware([HelloMiddleware::class])->group(function () {
-    Route::get('/hello', 'App\Http\Controllers\HelloController@index')->name('hello');
-    Route::get('/hello/{msg}', 'App\Http\Controllers\HelloController@other');
-    Route::post('/hello/other', 'App\Http\Controllers\HelloController@other');
-    
-});
+Route::get('/hello','App\Http\Controllers\HelloController@index')->name('hello');
+Route::post('/hello','App\Http\Controllers\HelloController@index')->name('hello');
+Route::get('/hello/{msg}','App\Http\Controllers\HelloController@other');
+Route::post('/hello/other','App\Http\Controllers\HelloController@other');
 
 Route::namespace('App\Http\Controllers\Sample')->group(function () {
-    Route::get('/sample', 'SampleController@index')->name('sample');
-    Route::get('/sample/other', 'SampleController@other');
+Route::get('/sample', 'SampleController@index')->name('sample');
+Route::get('/sample/other', 'SampleController@other');
 });
 
 Route::get('/hello/{person}', 'App\Http\Controllers\HelloController@index');
